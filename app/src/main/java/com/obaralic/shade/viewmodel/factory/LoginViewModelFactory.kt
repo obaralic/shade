@@ -12,28 +12,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.obaralic.shade.ui.login
+
+package com.obaralic.shade.viewmodel.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.obaralic.shade.data.LoginDataSource
-import com.obaralic.shade.data.LoginRepository
+import com.obaralic.shade.model.LoginDataSource
+import com.obaralic.shade.model.LoginRepository
+import com.obaralic.shade.viewmodel.login.LoginViewModel
+import java.lang.IllegalArgumentException
 
 /**
- * ViewModel provider factory to instantiate LoginViewModel.
- * Required given LoginViewModel has a non-empty constructor
+ * {@link LoginViewModelFactory} is used to instantiate {@link LoginViewModel}.
+ * Required given {@link LoginViewModel} has a non-empty constructor.
  */
+@Suppress("UNCHECKED_CAST")
 class LoginViewModelFactory : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    override fun <VM : ViewModel?> create(modelClass: Class<VM>): VM {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(
-                loginRepository = LoginRepository(
-                    dataSource = LoginDataSource()
-                )
-            ) as T
+            return LoginViewModel(createLoginModel()) as VM
+        } else {
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+
+    private fun createLoginModel(): LoginRepository {
+        return LoginRepository(dataSource = LoginDataSource())
     }
 }

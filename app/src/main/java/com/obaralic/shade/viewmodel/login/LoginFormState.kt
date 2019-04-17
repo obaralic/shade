@@ -12,12 +12,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.obaralic.shade.data.model
+
+package com.obaralic.shade.viewmodel.login
 
 /**
- * Data class that captures user information for logged in users retrieved from LoginRepository
+ * Data validation state of the login form.
  */
-data class LoggedInUser(
-    val userId: String,
-    val displayName: String
+data class LoginFormState(
+    val usernameError: Int? = null,
+    val passwordError: Int? = null,
+    val isDataValid: Boolean = false
 )

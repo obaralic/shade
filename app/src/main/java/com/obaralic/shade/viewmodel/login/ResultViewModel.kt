@@ -13,23 +13,14 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.util.extension
+package com.obaralic.shade.viewmodel.login
 
-import android.util.Patterns
-import android.webkit.URLUtil
+import com.obaralic.shade.viewmodel.UserViewModel
 
-fun String?.isValidURL(): Boolean =
-    if (this == null) false else isNotEmpty() && URLUtil.isValidUrl(this)
-
-fun String?.stripEmail(): String =
-    this?.substring(0, this.indexOf("@")) ?: ""
-
-fun String?.isEmailAddress(): Boolean {
-    return if (this == null) {
-        false
-    } else if (this.contains('@')) {
-        Patterns.EMAIL_ADDRESS.matcher(this).matches()
-    } else {
-        this.isNotBlank()
-    }
-}
+/**
+ * Authentication result : success (user details) or error message.
+ */
+data class ResultViewModel(
+    val success: UserViewModel? = null,
+    val error: Int? = null
+)

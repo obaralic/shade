@@ -12,12 +12,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.obaralic.shade.ui.login
+
+package com.obaralic.shade.model
+
+import java.lang.Exception
 
 /**
- * User details post authentication that is exposed to the UI
+ * A generic class that holds a value with its loading status.
  */
-data class LoggedInUserView(
-    val displayName: String
-    //... other data fields that may be accessible to the UI
-)
+sealed class Result<out Data: Any> {
+
+    data class Success<out Data: Any>(val data: Data): Result<Data>()
+
+    data class Error(val error: Exception): Result<Nothing>()
+
+    override fun toString(): String {
+        return when (this) {
+            is Success -> "Success[data=$data]"
+            is Error -> "Error[exception=$error]"
+        }
+    }
+}

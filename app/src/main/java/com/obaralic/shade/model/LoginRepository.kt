@@ -12,28 +12,44 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.obaralic.shade.data
 
-import com.obaralic.shade.data.model.LoggedInUser
+package com.obaralic.shade.model
+
+import com.obaralic.shade.model.data.User
 
 /**
- * Class that requests authentication and user information from the remote data source and
- * maintains an in-memory cache of login status and user credentials information.
+ * Class that requests authentication and user information
+ * from the remote data source and maintains an in-memory
+ * cache of login status and user credentials information.
  */
-
 class LoginRepository(val dataSource: LoginDataSource) {
 
-    // in-memory cache of the loggedInUser object
-    var user: LoggedInUser? = null
+    /** In-memory cache of the User object. */
+    var user: User? = null
         private set
 
     val isLoggedIn: Boolean
         get() = user != null
 
+
     init {
+        user = null
+    }
+
+    fun login(username: String, password: String): Result<User> {
+        val result = dataSource.login(username, password)
+
+        if (result is Result.Success) {
+            setUser(result.data)
+        }
+
+        return result
+    }
+
+    private fun setUser(user: User) {
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
-        user = null
+        this.user = user
     }
 
     fun logout() {
@@ -41,20 +57,4 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.logout()
     }
 
-    fun login(username: String, password: String): Result<LoggedInUser> {
-        // handle login
-        val result = dataSource.login(username, password)
-
-        if (result is Result.Success) {
-            setLoggedInUser(result.data)
-        }
-
-        return result
-    }
-
-    private fun setLoggedInUser(loggedInUser: LoggedInUser) {
-        this.user = loggedInUser
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
-    }
 }

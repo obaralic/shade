@@ -13,23 +13,26 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.util.extension
+package com.obaralic.shade.view.activity
 
-import android.util.Patterns
-import android.webkit.URLUtil
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
-fun String?.isValidURL(): Boolean =
-    if (this == null) false else isNotEmpty() && URLUtil.isValidUrl(this)
+abstract class BaseActivity : AppCompatActivity() {
 
-fun String?.stripEmail(): String =
-    this?.substring(0, this.indexOf("@")) ?: ""
+    // TODO: Add Rx Disposables support
 
-fun String?.isEmailAddress(): Boolean {
-    return if (this == null) {
-        false
-    } else if (this.contains('@')) {
-        Patterns.EMAIL_ADDRESS.matcher(this).matches()
-    } else {
-        this.isNotBlank()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        init()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // TODO: Dispose Rx disposables
+    }
+
+    private fun init() {
+        // TODO: Init Rx component
     }
 }

@@ -12,12 +12,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.obaralic.shade.ui.login
+
+package com.obaralic.shade.viewmodel
 
 /**
- * Authentication result : success (user details) or error message.
+ * User details post authentication that is exposed to the UI
  */
-data class LoginResult(
-    val success: LoggedInUserView? = null,
-    val error: Int? = null
+data class UserViewModel(
+    val name: String,
+    val username: String
 )
