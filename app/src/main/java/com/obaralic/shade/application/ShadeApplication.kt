@@ -16,11 +16,23 @@
 package com.obaralic.shade.application
 
 import android.app.Application
+import com.obaralic.shade.dagger.component.AppComponent
+import com.obaralic.shade.dagger.component.DaggerAppComponent
+import com.obaralic.shade.dagger.module.ContextModule
 
 class ShadeApplication : Application() {
 
+    // A way of exposing Component object so that dependency can be injected,
+    companion object {
+        lateinit var component: AppComponent
+    }
+
     override fun onCreate() {
         super.onCreate()
-        // TODO: Add Dagger2 integration
+
+        component = DaggerAppComponent
+                .builder()
+                .contextModule(ContextModule(this.applicationContext))
+                .build()
     }
 }

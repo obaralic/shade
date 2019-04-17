@@ -16,18 +16,21 @@
 package com.obaralic.shade.view.activity
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.obaralic.shade.R
+import com.obaralic.shade.application.ShadeApplication
 import com.obaralic.shade.util.extension.afterTextChanged
 import com.obaralic.shade.util.extension.toastLong
 import com.obaralic.shade.viewmodel.UserViewModel
 import com.obaralic.shade.viewmodel.factory.LoginViewModelFactory
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
+import javax.inject.Inject
 
 class LoginActivity : BaseActivity() {
 
@@ -37,6 +40,7 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         init()
+        appContext.toastLong("If toast is show Dagger2 is working!")
     }
 
     private fun init() {

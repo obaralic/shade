@@ -15,10 +15,22 @@
 
 package com.obaralic.shade.view.activity
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.obaralic.shade.application.ShadeApplication
+import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var appContext: Context
+
+    init {
+        // This is a bit pointless since Activity has access to the Context,
+        // but this is just a Dagger2 usage proof of concept.
+        ShadeApplication.component.inject(this)
+    }
 
     // TODO: Add Rx Disposables support
 
