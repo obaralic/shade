@@ -16,9 +16,13 @@
 package com.obaralic.shade.application
 
 import android.app.Application
+import android.content.Context
+import android.location.LocationManager
 import com.obaralic.shade.dagger.component.AppComponent
 import com.obaralic.shade.dagger.component.DaggerAppComponent
-import com.obaralic.shade.dagger.module.ContextModule
+import com.obaralic.shade.dagger.module.AndroidModule
+import com.obaralic.shade.util.extension.toastLong
+import javax.inject.Inject
 
 class ShadeApplication : Application() {
 
@@ -27,12 +31,22 @@ class ShadeApplication : Application() {
         lateinit var component: AppComponent
     }
 
+    @Inject
+    lateinit var manager: LocationManager
+
+    @Inject
+    lateinit var context: Context
+
     override fun onCreate() {
         super.onCreate()
 
         component = DaggerAppComponent
                 .builder()
-                .contextModule(ContextModule(this.applicationContext))
+                .androidModule(AndroidModule(this))
                 .build()
+        component.inject(this)
+
+        // Test DI success
+        context.toastLong("Available providers:\n${manager.allProviders}")
     }
 }

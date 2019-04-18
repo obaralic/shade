@@ -15,13 +15,8 @@
 
 package com.obaralic.shade.model
 
-import android.content.Context
-import com.obaralic.shade.application.ShadeApplication
 import com.obaralic.shade.model.data.User
 import com.obaralic.shade.util.extension.stripEmail
-import com.obaralic.shade.util.extension.toastLong
-import java.lang.Exception
-import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 
@@ -29,7 +24,7 @@ import javax.inject.Inject
  * Class that handles authentication with login credentials
  * and retrieves user information data.
  */
-class LoginDataSource {
+class LoginDataSource @Inject constructor() {
 
     fun login(username: String, password: String): Result<User> {
         var result: Result<User>

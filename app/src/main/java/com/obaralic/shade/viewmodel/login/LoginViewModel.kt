@@ -19,15 +19,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.obaralic.shade.R
+import com.obaralic.shade.application.ShadeApplication
 import com.obaralic.shade.model.LoginRepository
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.util.extension.isEmailAddress
 import com.obaralic.shade.viewmodel.UserViewModel
+import javax.inject.Inject
 
-class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
+class LoginViewModel : ViewModel() {
 
-    companion object {
-        const val LENGTH = 5
+    @Inject
+    lateinit var repository: LoginRepository
+
+    init {
+        ShadeApplication.component.inject(this)
     }
 
     private val _loginFormState = MutableLiveData<LoginFormState>()
@@ -73,5 +78,5 @@ class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
     private fun isUsernameValid(username: String) = username.isEmailAddress()
 
     // TODO: A placeholder password validation check
-    private fun isPasswordValid(password: String) = password.length > LENGTH
+    private fun isPasswordValid(password: String) = password.length > 5
 }

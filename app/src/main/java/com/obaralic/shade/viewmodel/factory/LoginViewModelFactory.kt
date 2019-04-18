@@ -21,23 +21,21 @@ import com.obaralic.shade.model.LoginDataSource
 import com.obaralic.shade.model.LoginRepository
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import java.lang.IllegalArgumentException
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * {@link LoginViewModelFactory} is used to instantiate {@link LoginViewModel}.
  * Required given {@link LoginViewModel} has a non-empty constructor.
  */
 @Suppress("UNCHECKED_CAST")
-class LoginViewModelFactory : ViewModelProvider.Factory {
+class LoginViewModelFactory @Inject constructor() : ViewModelProvider.Factory {
 
     override fun <VM : ViewModel?> create(modelClass: Class<VM>): VM {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-            return LoginViewModel(createLoginModel()) as VM
+            return LoginViewModel() as VM
         } else {
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-    }
-
-    private fun createLoginModel(): LoginRepository {
-        return LoginRepository(dataSource = LoginDataSource())
     }
 }

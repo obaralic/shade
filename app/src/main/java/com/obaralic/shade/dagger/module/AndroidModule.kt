@@ -16,14 +16,29 @@
 package com.obaralic.shade.dagger.module
 
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
+import android.location.LocationManager
+import com.obaralic.shade.application.ShadeApplication
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * A module for Android-specific dependencies which require
+ * {@link Context} or {@link android.app.Application} to create.
+ */
 @Module
-class ContextModule(internal val context: Context) {
+class AndroidModule(internal val application: ShadeApplication) {
 
-    @Singleton
+    /**
+     * Allow the application context to be injected but require that it be annotated with
+     * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
+     */
     @Provides
-    fun provideContext() = context
+    @Singleton
+    fun provideApplicationContext(): Context = application
+
+    @Provides
+    @Singleton
+    fun provideLocationManager(): LocationManager = application.getSystemService(LOCATION_SERVICE) as LocationManager
 }

@@ -16,13 +16,17 @@
 package com.obaralic.shade.model
 
 import com.obaralic.shade.model.data.User
+import javax.inject.Inject
 
 /**
  * Class that requests authentication and user information
  * from the remote data source and maintains an in-memory
  * cache of login status and user credentials information.
  */
-class LoginRepository(val dataSource: LoginDataSource) {
+class LoginRepository @Inject constructor()  {
+
+    @Inject
+    lateinit var dataSource: LoginDataSource
 
     /** In-memory cache of the User object. */
     var user: User? = null

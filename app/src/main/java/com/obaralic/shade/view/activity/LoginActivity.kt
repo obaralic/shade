@@ -34,6 +34,9 @@ import javax.inject.Inject
 
 class LoginActivity : BaseActivity() {
 
+    @Inject
+    lateinit var viewmodelFactory: LoginViewModelFactory
+
     private lateinit var viewmodel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,17 +46,18 @@ class LoginActivity : BaseActivity() {
         appContext.toastLong("If toast is show Dagger2 is working!")
     }
 
+    init {
+        ShadeApplication.component.inject(this)
+    }
+
     private fun init() {
         initViewModel()
         initLayout()
     }
 
     private fun initViewModel() {
-        viewmodel = ViewModelProviders
-            .of(this, LoginViewModelFactory())
-            .get(LoginViewModel::class.java)
+        viewmodel = ViewModelProviders.of(this, viewmodelFactory).get(LoginViewModel::class.java)
     }
-
 
     private fun initLayout() {
         viewmodel.loginFormState.observe(this@LoginActivity, Observer {
