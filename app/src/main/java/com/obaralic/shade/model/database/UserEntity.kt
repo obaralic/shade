@@ -13,14 +13,28 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.model.data
+package com.obaralic.shade.model.database
 
-/**
- * Data class that captures user information for logged in users
- * retrieved from {@link LoginRepository}.
- */
-data class User(
-    val id: Long,
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "users_table")
+data class UserEntity(
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "uid")
+    @NonNull
+    val userId: Long = 0,
+
+    @NonNull
+    val username: String,
+
+    @NonNull
+    @ColumnInfo(name = "display_name")
     val name: String,
-    val username: String
+
+    @NonNull
+    val password: String
 )

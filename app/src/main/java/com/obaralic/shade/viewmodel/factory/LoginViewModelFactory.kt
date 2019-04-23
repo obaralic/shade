@@ -17,12 +17,9 @@ package com.obaralic.shade.viewmodel.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.obaralic.shade.model.LoginDataSource
-import com.obaralic.shade.model.LoginRepository
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * {@link LoginViewModelFactory} is used to instantiate {@link LoginViewModel}.

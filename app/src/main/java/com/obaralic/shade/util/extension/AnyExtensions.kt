@@ -13,14 +13,10 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.model.data
+package com.obaralic.shade.util.extension
 
-/**
- * Data class that captures user information for logged in users
- * retrieved from {@link LoginRepository}.
- */
-data class User(
-    val id: Long,
-    val name: String,
-    val username: String
-)
+val Any.TAG: String
+    get() {
+        val tag = javaClass.simpleName
+        return if (tag.length <= 23) tag else tag.substring(0, 23)
+    }

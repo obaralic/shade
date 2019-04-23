@@ -17,6 +17,7 @@ package com.obaralic.shade.dagger.component
 
 import com.obaralic.shade.application.ShadeApplication
 import com.obaralic.shade.dagger.module.AndroidModule
+import com.obaralic.shade.model.source.StorageDataSource
 import com.obaralic.shade.view.activity.BaseActivity
 import com.obaralic.shade.view.activity.LoginActivity
 import com.obaralic.shade.viewmodel.login.LoginViewModel
@@ -30,4 +31,5 @@ interface AppComponent {
     fun inject(base: BaseActivity)
     fun inject(loginActivity: LoginActivity)
     fun inject(loginViewModel: LoginViewModel)
+    fun inject(storageDataSource: StorageDataSource)
 }

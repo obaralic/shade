@@ -20,13 +20,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.obaralic.shade.R
 import com.obaralic.shade.application.ShadeApplication
-import com.obaralic.shade.model.LoginRepository
+import com.obaralic.shade.model.repo.LoginRepository
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.util.extension.isEmailAddress
 import com.obaralic.shade.viewmodel.UserViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.lang.RuntimeException
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class LoginViewModel : ViewModel() {
+
+    private var parentJob = Job()
+
+    private val coroutineContext: CoroutineContext
+        get() = parentJob + Dispatchers.Main
+
+    private val scope = CoroutineScope(coroutineContext)
 
     @Inject
     lateinit var repository: LoginRepository
@@ -35,42 +48,67 @@ class LoginViewModel : ViewModel() {
         ShadeApplication.component.inject(this)
     }
 
-    private val _loginFormState = MutableLiveData<LoginFormState>()
-    val loginFormState: LiveData<LoginFormState> = _loginFormState
+    // LiveData that is fed from the user input and its change is observed for the sake of button enabling.
+    private val inputState: MutableLiveData<LoginFormState> by lazy { MutableLiveData<LoginFormState>() }
+    val inputLiveState: LiveData<LoginFormState> by lazy { inputState }
 
-    private val _loginResult = MutableLiveData<ResultViewModel>()
-    val loginResult: LiveData<ResultViewModel> = _loginResult
+    // LiveData that is fed from the user authentication.
+    private val loginResult: MutableLiveData<ResultViewModel> by lazy { MutableLiveData<ResultViewModel>() }
+    val loginLiveResult: LiveData<ResultViewModel> by lazy { loginResult }
 
-    fun login(username: String, password: String) {
+    /**
+     *
+     */
+    fun login(username: String, password: String) = scope.launch(Dispatchers.IO) {
+
         // TODO: Launched in a separate asynchronous job via Rx
+        // With Rx convert postValue to setValue
         val result = repository.login(username, password)
         when (result) {
             is Result.Success ->
-                _loginResult.value = ResultViewModel(
-                    success = UserViewModel(
-                        name = result.data.name,
-                        username = result.data.username
+                loginResult.postValue(
+                    ResultViewModel(
+                        success = UserViewModel(
+                            name = result.data.name,
+                            username = result.data.username
+                        )
                     )
                 )
 
             is Result.Error ->
-                _loginResult.value = ResultViewModel(error = R.string.login_failed)
+                loginResult.postValue(ResultViewModel(error = R.string.login_failed))
         }
     }
 
-    fun dataChanged(username: String, password: String) {
+    /**
+     *
+     */
+    fun signUp(username: String, password: String) = scope.launch(Dispatchers.IO) {
+        val result = repository.signUp(username, password)
+        when (result) {
+            is Result.Error -> throw RuntimeException(result.error)
+        }
+    }
+
+    /**
+     *
+     */
+    fun inputDataChanged(username: String, password: String) {
         if (!isUsernameValid(username)) {
-            _loginFormState.value = LoginFormState(usernameError = R.string.invalid_username)
+            inputState.value = LoginFormState(usernameError = R.string.invalid_username)
 
         } else if (!isPasswordValid(password)) {
-            _loginFormState.value = LoginFormState(passwordError = R.string.invalid_password)
+            inputState.value = LoginFormState(passwordError = R.string.invalid_password)
 
         } else {
-            _loginFormState.value = LoginFormState(isDataValid = true)
+            inputState.value = LoginFormState(isDataValid = true)
         }
     }
 
-    fun logout() {
+    /**
+     *
+     */
+    fun logout() = scope.launch(Dispatchers.IO) {
         if (repository.isLoggedIn) repository.logout()
     }
 

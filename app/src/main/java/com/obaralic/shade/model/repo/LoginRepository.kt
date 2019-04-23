@@ -13,8 +13,11 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.model
+package com.obaralic.shade.model.repo
 
+import androidx.annotation.WorkerThread
+import com.obaralic.shade.model.source.StorageDataSource
+import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.data.User
 import javax.inject.Inject
 
@@ -26,7 +29,9 @@ import javax.inject.Inject
 class LoginRepository @Inject constructor()  {
 
     @Inject
-    lateinit var dataSource: LoginDataSource
+    lateinit var localSource: StorageDataSource
+
+    // --- START: Convert into cacheDataSource ---
 
     /** In-memory cache of the User object. */
     var user: User? = null
@@ -36,18 +41,10 @@ class LoginRepository @Inject constructor()  {
         get() = user != null
 
 
+    // --- END ---
+
     init {
         user = null
-    }
-
-    fun login(username: String, password: String): Result<User> {
-        val result = dataSource.login(username, password)
-
-        if (result is Result.Success) {
-            setUser(result.data)
-        }
-
-        return result
     }
 
     private fun setUser(user: User) {
@@ -56,9 +53,26 @@ class LoginRepository @Inject constructor()  {
         this.user = user
     }
 
+    @WorkerThread
+    fun login(username: String, password: String): Result<User> {
+        val result = localSource.login(username, password)
+
+        if (result is Result.Success) {
+            setUser(result.data)
+        }
+
+        return result
+    }
+
+    @WorkerThread
+    fun signUp(username: String, password: String): Result<User> {
+        return localSource.signUp(username, password)
+    }
+
+    @WorkerThread
     fun logout() {
         user = null
-        dataSource.logout()
+        localSource.logout()
     }
 
 }

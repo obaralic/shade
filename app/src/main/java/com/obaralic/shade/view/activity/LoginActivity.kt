@@ -16,9 +16,9 @@
 package com.obaralic.shade.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -28,7 +28,9 @@ import com.obaralic.shade.util.extension.afterTextChanged
 import com.obaralic.shade.util.extension.toastLong
 import com.obaralic.shade.viewmodel.UserViewModel
 import com.obaralic.shade.viewmodel.factory.LoginViewModelFactory
+import com.obaralic.shade.viewmodel.login.LoginFormState
 import com.obaralic.shade.viewmodel.login.LoginViewModel
+import com.obaralic.shade.viewmodel.login.ResultViewModel
 import kotlinx.android.synthetic.main.activity_login.*
 import javax.inject.Inject
 
@@ -43,7 +45,6 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         init()
-        appContext.toastLong("If toast is show Dagger2 is working!")
     }
 
     init {
@@ -60,38 +61,34 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun initLayout() {
-        viewmodel.loginFormState.observe(this@LoginActivity, Observer {
-            val loginState = it ?: return@Observer
+        val inputObserver = Observer<LoginFormState> {
 
-            // disable login button unless both username / password is valid
-            login.isEnabled = loginState.isDataValid
+            // Null check of the state
+            val state = it ?: return@Observer
 
-            if (loginState.usernameError != null) {
-                username.error = getString(loginState.usernameError)
-            }
-            if (loginState.passwordError != null) {
-                password.error = getString(loginState.passwordError)
-            }
-        })
+            login.isEnabled = state.isDataValid
+            if (state.usernameError != null) username.error = getString(state.usernameError)
+            if (state.passwordError != null) password.error = getString(state.passwordError)
+        }
 
-        viewmodel.loginResult.observe(this@LoginActivity, Observer {
-            val loginResult = it ?: return@Observer
+        val resultObserver = Observer<ResultViewModel> {
 
-            loading.visibility = View.GONE
-            if (loginResult.error != null) {
-                toastLong(loginResult.error)
-            }
-            if (loginResult.success != null) {
-                updateUiWithUser(loginResult.success)
-            }
-            setResult(Activity.RESULT_OK)
+            val result = it ?: return@Observer
+
+            login.visibility = GONE
+            if (result.error != null) toastLong(result.error)
+            if (result.success != null) toastLong(result.success.name)
 
             //Complete and destroy login activity once successful
+            setResult(Activity.RESULT_OK)
             finish()
-        })
+        }
+
+        viewmodel.inputLiveState.observe(this@LoginActivity, inputObserver)
+        viewmodel.loginLiveResult.observe(this@LoginActivity, resultObserver)
 
         username.afterTextChanged {
-            viewmodel.dataChanged(
+            viewmodel.inputDataChanged(
                 username.text.toString(),
                 password.text.toString()
             )
@@ -99,7 +96,7 @@ class LoginActivity : BaseActivity() {
 
         password.apply {
             afterTextChanged {
-                viewmodel.dataChanged(
+                viewmodel.inputDataChanged(
                     username.text.toString(),
                     password.text.toString()
                 )
@@ -121,9 +118,14 @@ class LoginActivity : BaseActivity() {
                 viewmodel.login(username.text.toString(), password.text.toString())
             }
         }
+
+        signup.setOnClickListener{
+            toastLong("Dummy action: Inserting debug database item.")
+//            viewmodel.signUp("debug@test.com", "debug@test")
+        }
     }
 
-    private fun updateUiWithUser(model: UserViewModel) {
+    private fun updateLayout(model: UserViewModel) {
 
         // TODO : initiate successful logged in experience
         val welcome = getString(R.string.welcome)

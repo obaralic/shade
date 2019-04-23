@@ -13,14 +13,26 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.model.data
+package com.obaralic.shade.util
+
+import java.util.concurrent.Executors
+
+private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
+
+private val JOB_EXECUTOR = Executors.newSingleThreadExecutor()
 
 /**
- * Data class that captures user information for logged in users
- * retrieved from {@link LoginRepository}.
+ * Helper function that wraps {@link Executors#newSingleThreadExecutor}
+ * which is used to perform IO job.
  */
-data class User(
-    val id: Long,
-    val name: String,
-    val username: String
-)
+fun ioThread(func: () -> Unit) {
+    IO_EXECUTOR.execute(func)
+}
+
+/**
+ * Helper function that wraps {@link Executors#newSingleThreadExecutor}
+ * which is used to perform computation job.
+ */
+fun jobThread(func: () -> Unit) {
+    JOB_EXECUTOR.execute(func)
+}
