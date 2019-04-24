@@ -15,36 +15,25 @@
 
 package com.obaralic.shade.view.activity
 
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.obaralic.shade.application.ShadeApplication
-import javax.inject.Inject
+import com.obaralic.shade.util.extension.TAG
 
 abstract class BaseActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var appContext: Context
-
-    init {
-        // This is a bit pointless since Activity has access to the Context,
-        // but this is just a Dagger2 usage proof of concept.
-        ShadeApplication.component.inject(this)
-    }
 
     // TODO: Add Rx Disposables support
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        init()
+        Log.d(TAG, "BaseActivity: onCreate")
+        // TODO: Init Rx component
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d(TAG, "BaseActivity: onDestroy")
         // TODO: Dispose Rx disposables
     }
 
-    private fun init() {
-        // TODO: Init Rx component
-    }
 }

@@ -13,22 +13,26 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.component
+package com.obaralic.shade.view.activity
 
-import com.obaralic.shade.application.ShadeApplication
-import com.obaralic.shade.dagger.module.AndroidModule
-import com.obaralic.shade.model.source.StorageDataSource
-import com.obaralic.shade.view.activity.BaseActivity
+import android.os.Bundle
+import com.obaralic.shade.R
 import com.obaralic.shade.view.fragment.LoginFragment
-import com.obaralic.shade.viewmodel.login.LoginViewModel
-import dagger.Component
-import javax.inject.Singleton
 
-@Singleton
-@Component(modules = [AndroidModule::class])
-interface AppComponent {
-    fun inject(application: ShadeApplication)
-    fun inject(loginViewModel: LoginViewModel)
-    fun inject(storageDataSource: StorageDataSource)
-    fun inject(loginFragment: LoginFragment)
+
+class MainActivity : BaseActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        initFragment(savedInstanceState)
+    }
+
+    private fun initFragment(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) return
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_container, LoginFragment.new(), null)
+            .commit()
+    }
 }

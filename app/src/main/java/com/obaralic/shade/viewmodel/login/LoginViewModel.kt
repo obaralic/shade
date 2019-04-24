@@ -20,15 +20,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.obaralic.shade.R
 import com.obaralic.shade.application.ShadeApplication
-import com.obaralic.shade.model.repo.LoginRepository
 import com.obaralic.shade.model.Result
+import com.obaralic.shade.model.repo.LoginRepository
 import com.obaralic.shade.util.extension.isEmailAddress
 import com.obaralic.shade.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.lang.RuntimeException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 

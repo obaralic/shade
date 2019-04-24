@@ -13,51 +13,68 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.view.activity
+package com.obaralic.shade.view.fragment
 
-import android.app.Activity
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.obaralic.shade.R
 import com.obaralic.shade.application.ShadeApplication
+import com.obaralic.shade.databinding.FragmentLoginBinding
+import com.obaralic.shade.util.extension.TAG
 import com.obaralic.shade.util.extension.afterTextChanged
 import com.obaralic.shade.util.extension.toastLong
-import com.obaralic.shade.viewmodel.UserViewModel
 import com.obaralic.shade.viewmodel.factory.LoginViewModelFactory
 import com.obaralic.shade.viewmodel.login.LoginFormState
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import com.obaralic.shade.viewmodel.login.ResultViewModel
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import javax.inject.Inject
 
-class LoginActivity : BaseActivity() {
+class LoginFragment : Fragment() {
 
     @Inject
     lateinit var viewmodelFactory: LoginViewModelFactory
 
     private lateinit var viewmodel: LoginViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        init()
+    private lateinit var dataBinding: FragmentLoginBinding
+
+    companion object {
+        fun new(): LoginFragment = LoginFragment()
     }
 
     init {
         ShadeApplication.component.inject(this)
     }
 
-    private fun init() {
-        initViewModel()
-        initLayout()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "LoginFragment: onCreate")
+        viewmodel = ViewModelProviders.of(this, viewmodelFactory).get(LoginViewModel::class.java)
     }
 
-    private fun initViewModel() {
-        viewmodel = ViewModelProviders.of(this, viewmodelFactory).get(LoginViewModel::class.java)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d(TAG, "LoginFragment: onCreateView")
+        dataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
+
+        // Static binding just for the sake of usage...
+        dataBinding.signupButton = R.string.action_sign_up
+        dataBinding.loginButton = R.string.action_log_in
+        dataBinding.viewmodel = viewmodel
+        return dataBinding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initLayout()
     }
 
     private fun initLayout() {
@@ -75,17 +92,12 @@ class LoginActivity : BaseActivity() {
 
             val result = it ?: return@Observer
 
-            login.visibility = GONE
-            if (result.error != null) toastLong(result.error)
-            if (result.success != null) toastLong(result.success.name)
-
-            //Complete and destroy login activity once successful
-            setResult(Activity.RESULT_OK)
-            finish()
+            loading.visibility = View.GONE
+            handleResult(result)
         }
 
-        viewmodel.inputLiveState.observe(this@LoginActivity, inputObserver)
-        viewmodel.loginLiveResult.observe(this@LoginActivity, resultObserver)
+        viewmodel.inputLiveState.observe(this@LoginFragment, inputObserver)
+        viewmodel.loginLiveResult.observe(this@LoginFragment, resultObserver)
 
         username.afterTextChanged {
             viewmodel.inputDataChanged(
@@ -121,15 +133,24 @@ class LoginActivity : BaseActivity() {
 
         signup.setOnClickListener{
             toastLong("Dummy action: Inserting debug database item.")
-//            viewmodel.signUp("debug@test.com", "debug@test")
         }
     }
 
-    private fun updateLayout(model: UserViewModel) {
-
-        // TODO : initiate successful logged in experience
-        val welcome = getString(R.string.welcome)
-        val name = model.name
-        toastLong("$welcome $name")
+    private fun handleResult(result: ResultViewModel) {
+        if (result.error != null) {
+            toastLong(result.error)
+        }
+        if (result.success != null) {
+            toastLong(result.success.name)
+        }
     }
+
+    private fun toastLong(text: String) {
+        context?.toastLong(text)
+    }
+
+    private fun toastLong(textId: Int) {
+        context?.toastLong(textId)
+    }
+
 }

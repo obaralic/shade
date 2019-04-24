@@ -68,7 +68,7 @@ abstract class AppDatabase : RoomDatabase() {
                         val dao = getInstance(application).userDao()
                         dao.insert(UserEntity(0, "debug0@test.com", "Debug0", "debug0"))
                         dao.insert(UserEntity(0, "debug1@test.com", "Debug1", "debug1"))
-                        dao.insert(UserEntity(0, "debug1@test.com", "Debug2", "debug2"))
+                        dao.insert(UserEntity(0, "debug2@test.com", "Debug2", "debug2"))
                     }
                 }
             }
