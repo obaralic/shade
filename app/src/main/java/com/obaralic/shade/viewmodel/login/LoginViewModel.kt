@@ -19,7 +19,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.obaralic.shade.R
-import com.obaralic.shade.application.ShadeApplication
+import com.obaralic.shade.App
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.repo.LoginRepository
 import com.obaralic.shade.util.extension.isEmailAddress
@@ -44,7 +44,7 @@ class LoginViewModel : ViewModel() {
     lateinit var repository: LoginRepository
 
     init {
-        ShadeApplication.component.inject(this)
+        App.component.inject(this)
     }
 
     // LiveData that is fed from the user input and its change is observed for the sake of button enabling.

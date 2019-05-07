@@ -73,4 +73,7 @@ dependencies {
 
     // Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+
+    // Timber Log
+    implementation "com.jakewharton.timber:timber:$timber_version"
 }

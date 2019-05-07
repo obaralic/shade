@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.android.component
+package com.obaralic.shade.di.android.component
 
 /**
  * =====================================================================================================================

@@ -13,16 +13,26 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.annotation
+package com.obaralic.shade.util.log
 
-import javax.inject.Qualifier
-import javax.inject.Scope
+import android.util.Log
+import timber.log.Timber
 
-/**
- * Dagger need to set a scope to define the lifecycle for any component.
- * Activity cannot be the singleton,so scope annotation called 'ForActivity' is defined.
- */
-@Retention(AnnotationRetention.RUNTIME)
-@Qualifier
-@Scope
-annotation class ForActivity
+class CrashReportingTree : Timber.Tree() {
+
+    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+        if (priority == Log.VERBOSE || priority == Log.DEBUG) return
+
+//       Crashlytics.log(priority, tag, message)
+
+        if (t != null) {
+            if (priority == Log.ERROR) {
+//                Crashlytics.logException(t)
+
+            } else if (priority == Log.WARN) {
+//                Crashlytics.logException(t)
+            }
+        }
+    }
+
+}

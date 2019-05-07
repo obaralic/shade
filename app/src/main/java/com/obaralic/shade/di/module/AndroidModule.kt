@@ -13,12 +13,12 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.module
+package com.obaralic.shade.di.module
 
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.location.LocationManager
-import com.obaralic.shade.application.ShadeApplication
+import com.obaralic.shade.App
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -28,7 +28,7 @@ import javax.inject.Singleton
  * {@link Context} or {@link android.app.Application} to create.
  */
 @Module
-class AndroidModule(internal val application: ShadeApplication) {
+class AndroidModule(internal val application: App) {
 
     /**
      * Allow the application context to be injected but require that it be annotated with

@@ -26,7 +26,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.obaralic.shade.R
-import com.obaralic.shade.application.ShadeApplication
+import com.obaralic.shade.App
 import com.obaralic.shade.databinding.FragmentLoginBinding
 import com.obaralic.shade.util.extension.TAG
 import com.obaralic.shade.util.extension.afterTextChanged
@@ -36,6 +36,7 @@ import com.obaralic.shade.viewmodel.login.LoginFormState
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import com.obaralic.shade.viewmodel.login.ResultViewModel
 import kotlinx.android.synthetic.main.fragment_login.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class LoginFragment : Fragment() {
@@ -52,17 +53,17 @@ class LoginFragment : Fragment() {
     }
 
     init {
-        ShadeApplication.component.inject(this)
+        App.component.inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "LoginFragment: onCreate")
+        Timber.d("LoginFragment: onCreate")
         viewmodel = ViewModelProviders.of(this, viewmodelFactory).get(LoginViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d(TAG, "LoginFragment: onCreateView")
+        Timber.d("LoginFragment: onCreateView")
         dataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
 
         // Static binding just for the sake of usage...
@@ -70,6 +71,7 @@ class LoginFragment : Fragment() {
         dataBinding.loginButton = R.string.action_log_in
         dataBinding.viewmodel = viewmodel
         return dataBinding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

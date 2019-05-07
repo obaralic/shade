@@ -13,26 +13,16 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.view.activity
+package com.obaralic.shade.di.annotation
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import timber.log.Timber
+import javax.inject.Qualifier
+import javax.inject.Scope
 
-abstract class BaseActivity : AppCompatActivity() {
-
-    // TODO: Add Rx Disposables support
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("BaseActivity: onCreate")
-        // TODO: Init Rx component
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Timber.d("BaseActivity: onDestroy")
-        // TODO: Dispose Rx disposables
-    }
-
-}
+/**
+ * Dagger need to set a scope to define the lifecycle for any component.
+ * Activity cannot be the singleton,so scope annotation called 'ForActivity' is defined.
+ */
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+@Scope
+annotation class ForActivity

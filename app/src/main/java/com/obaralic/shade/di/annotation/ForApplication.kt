@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.annotation
+package com.obaralic.shade.di.annotation
 
 import javax.inject.Qualifier
 

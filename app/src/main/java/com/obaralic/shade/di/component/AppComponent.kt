@@ -13,12 +13,11 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.dagger.component
+package com.obaralic.shade.di.component
 
-import com.obaralic.shade.application.ShadeApplication
-import com.obaralic.shade.dagger.module.AndroidModule
+import com.obaralic.shade.App
+import com.obaralic.shade.di.module.AndroidModule
 import com.obaralic.shade.model.source.StorageDataSource
-import com.obaralic.shade.view.activity.BaseActivity
 import com.obaralic.shade.view.fragment.LoginFragment
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import dagger.Component
@@ -27,7 +26,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [AndroidModule::class])
 interface AppComponent {
-    fun inject(application: ShadeApplication)
+    fun inject(application: App)
     fun inject(loginViewModel: LoginViewModel)
     fun inject(storageDataSource: StorageDataSource)
     fun inject(loginFragment: LoginFragment)

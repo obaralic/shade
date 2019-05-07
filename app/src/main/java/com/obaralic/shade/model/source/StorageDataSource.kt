@@ -5,7 +5,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ *app/src/main/AndroidManifest.xml
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,15 +16,14 @@
 package com.obaralic.shade.model.source
 
 import android.content.Context
-import android.util.Log
-import com.obaralic.shade.application.ShadeApplication
+import com.obaralic.shade.App
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.data.User
 import com.obaralic.shade.model.database.AppDatabase
 import com.obaralic.shade.model.database.UserDao
 import com.obaralic.shade.model.database.UserEntity
-import com.obaralic.shade.util.extension.TAG
 import com.obaralic.shade.util.extension.stripEmail
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -39,13 +38,13 @@ class StorageDataSource @Inject constructor() {
     lateinit var application: Context
 
     init {
-        ShadeApplication.component.inject(this)
+        App.component.inject(this)
         val database = AppDatabase.getInstance(application)
         userSource = database.userDao()
     }
 
     fun login(username: String, password: String): Result<User> {
-        Log.d(TAG, "Login[$username, $password]")
+        Timber.d("Login[$username, $password]")
         var result: Result<User>
 
         try {
@@ -60,7 +59,7 @@ class StorageDataSource @Inject constructor() {
     }
 
     fun signUp(username: String, password: String): Result<User> {
-        Log.d(TAG, "SignUp[$username, $password]")
+        Timber.d("SignUp[$username, $password]")
         var result: Result<User>
 
         try {
