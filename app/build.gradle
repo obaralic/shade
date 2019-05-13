@@ -48,13 +48,22 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     // Dagger 2
-    implementation "com.google.dagger:dagger:$dagger2_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger2_version"
+//    implementation "com.google.dagger:dagger:$dagger2_version"
+//    kapt "com.google.dagger:dagger-compiler:$dagger2_version"
 
     // Dagger 2 Android
+//    implementation "com.google.dagger:dagger-android:$dagger2_version"
+//    implementation "com.google.dagger:dagger-android-support:$dagger2_version"
+//    kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
+
+    //---
     implementation "com.google.dagger:dagger-android:$dagger2_version"
     implementation "com.google.dagger:dagger-android-support:$dagger2_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger2_version"
+
+    /* Dagger2 - default dependency */
+    kapt "com.google.dagger:dagger-compiler:$dagger2_version"
+    // 0---
 
     // ReactiveX
     implementation "com.jakewharton.rxbinding2:rxbinding:$rxbinding_version"
@@ -76,4 +85,7 @@ dependencies {
 
     // Timber Log
     implementation "com.jakewharton.timber:timber:$timber_version"
+
+    // Gson
+    implementation "com.google.code.gson:gson:$gson_version"
 }

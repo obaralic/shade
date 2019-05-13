@@ -16,7 +16,6 @@
 package com.obaralic.shade.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,17 +23,17 @@ import android.view.inputmethod.EditorInfo
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
 import com.obaralic.shade.R
-import com.obaralic.shade.App
 import com.obaralic.shade.databinding.FragmentLoginBinding
-import com.obaralic.shade.util.extension.TAG
 import com.obaralic.shade.util.extension.afterTextChanged
 import com.obaralic.shade.util.extension.toastLong
-import com.obaralic.shade.viewmodel.factory.LoginViewModelFactory
 import com.obaralic.shade.viewmodel.login.LoginFormState
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import com.obaralic.shade.viewmodel.login.ResultViewModel
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_login.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -42,9 +41,12 @@ import javax.inject.Inject
 class LoginFragment : Fragment() {
 
     @Inject
-    lateinit var viewmodelFactory: LoginViewModelFactory
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewmodel: LoginViewModel
+    @Inject
+    lateinit var gson: Gson
+
+    lateinit var viewmodel: LoginViewModel
 
     private lateinit var dataBinding: FragmentLoginBinding
 
@@ -52,14 +54,11 @@ class LoginFragment : Fragment() {
         fun new(): LoginFragment = LoginFragment()
     }
 
-    init {
-        App.component.inject(this)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidSupportInjection.inject(this)
         Timber.d("LoginFragment: onCreate")
-        viewmodel = ViewModelProviders.of(this, viewmodelFactory).get(LoginViewModel::class.java)
+        viewmodel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

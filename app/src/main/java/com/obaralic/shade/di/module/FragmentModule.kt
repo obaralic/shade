@@ -13,14 +13,19 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.di.annotation
+package com.obaralic.shade.di.module
 
-import javax.inject.Qualifier
+import com.obaralic.shade.view.fragment.LoginFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-/**
- * Dagger need to set a scope to define the lifecycle for any component.
- * Application is essentially a singleton.
- */
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ForApplication
+@Module
+abstract class FragmentModule {
+
+    /**
+     * Define the name of the Fragment that is going to
+     * inject the ViewModelFactory into. i.e. in our case.
+     */
+    @ContributesAndroidInjector
+    abstract fun contributeLoginFragment(): LoginFragment
+}

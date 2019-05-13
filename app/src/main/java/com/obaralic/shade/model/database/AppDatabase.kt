@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @Database(entities = [UserEntity::class], version = 1, exportSchema = false)
@@ -33,7 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
-        private const val NAME = "shade_database"
+        const val NAME = "shade_database"
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -53,13 +54,13 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE ?: buildDatabase(application)
             }
 
-
+        @Deprecated("Use @Inject")
         private fun buildDatabase(application: Context) =
             Room.databaseBuilder(application.applicationContext, AppDatabase::class.java,  NAME)
                 .addCallback(seedDatabaseCallback(application))
                 .build()
 
-        private fun seedDatabaseCallback(application: Context): Callback {
+        internal fun seedDatabaseCallback(application: Context): Callback {
             return object : Callback() {
 
                 override fun onCreate(db: SupportSQLiteDatabase) {

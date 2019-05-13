@@ -15,62 +15,68 @@
 
 package com.obaralic.shade
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.location.LocationManager
-import android.util.Log
-import com.obaralic.shade.di.component.AppComponent
 import com.obaralic.shade.di.component.DaggerAppComponent
-import com.obaralic.shade.di.module.AndroidModule
 import com.obaralic.shade.model.database.AppDatabase
-import com.obaralic.shade.util.extension.TAG
+import com.obaralic.shade.model.database.UserDao
 import com.obaralic.shade.util.ioThread
 import com.obaralic.shade.util.log.CrashReportingTree
-import javax.inject.Inject
-import timber.log.Timber.DebugTree
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import timber.log.Timber
+import timber.log.Timber.DebugTree
+import javax.inject.Inject
 
 
+class App : Application(), HasActivityInjector {
 
-class App : Application() {
+    @Inject
+    lateinit var context: Context
 
-    // A way of exposing Component object so that dependency can be injected,
-    companion object {
-        lateinit var component: AppComponent
-    }
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var userDao: UserDao
 
     @Inject
     lateinit var manager: LocationManager
 
     @Inject
-    lateinit var context: Context
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
+    override fun activityInjector(): DispatchingAndroidInjector<Activity>? {
+        return dispatchingAndroidInjector
+    }
 
     override fun onCreate() {
         super.onCreate()
-        initTimber()
         initDagger()
+        initTimber()
         initDatabase()
     }
 
-    private fun initTimber() {
-        if (BuildConfig.DEBUG) Timber.plant(DebugTree())
-        else Timber.plant(CrashReportingTree())
-    }
-
     private fun initDagger() {
-        component = DaggerAppComponent
-            .builder()
-            .androidModule(AndroidModule(this))
+        DaggerAppComponent.builder()
+            .application(this)
             .build()
-        component.inject(this)
+            .inject(this)
     }
 
     private fun initDatabase() {
         ioThread {
             // Just accessing database so that it can be created.
-            val userDao = AppDatabase.getInstance(this).userDao()
-            Timber.d("Users no: ${userDao.getCount()}")
+            val lUserDao = database.userDao()
+            Timber.d("Users no: ${userDao.getCount()} / ${lUserDao.getCount()}")
         }
+    }
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG) Timber.plant(DebugTree())
+        else Timber.plant(CrashReportingTree())
     }
 }
 

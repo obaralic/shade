@@ -16,7 +16,6 @@
 package com.obaralic.shade.model.source
 
 import android.content.Context
-import com.obaralic.shade.App
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.data.User
 import com.obaralic.shade.model.database.AppDatabase
@@ -30,16 +29,12 @@ import javax.inject.Inject
  * Class that handles authentication with login credentials
  * and retrieves user information data from the local data storage.
  */
-class StorageDataSource @Inject constructor() {
+class StorageDataSource @Inject constructor(var context: Context) {
 
     private val userSource: UserDao
 
-    @Inject
-    lateinit var application: Context
-
     init {
-        App.component.inject(this)
-        val database = AppDatabase.getInstance(application)
+        val database = AppDatabase.getInstance(context)
         userSource = database.userDao()
     }
 

@@ -13,16 +13,20 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.di.annotation
+package com.obaralic.shade.di
 
-import javax.inject.Qualifier
-import javax.inject.Scope
+import androidx.lifecycle.ViewModel
+import dagger.MapKey
+import kotlin.reflect.KClass
 
 /**
- * Dagger need to set a scope to define the lifecycle for any component.
- * Activity cannot be the singleton,so scope annotation called 'ForActivity' is defined.
+ * ViewModelKey helps you map your ViewModel classes
+ * so ViewModelFactory can correctly provide/inject them.
  */
-@Retention(AnnotationRetention.RUNTIME)
-@Qualifier
-@Scope
-annotation class ForActivity
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@MapKey
+annotation class ViewModelKey(val value: KClass<out ViewModel>)

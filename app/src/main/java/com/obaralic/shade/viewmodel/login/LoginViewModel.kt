@@ -19,7 +19,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.obaralic.shade.R
-import com.obaralic.shade.App
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.repo.LoginRepository
 import com.obaralic.shade.util.extension.isEmailAddress
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel @Inject constructor() : ViewModel() {
 
     private var parentJob = Job()
 
@@ -42,10 +41,6 @@ class LoginViewModel : ViewModel() {
 
     @Inject
     lateinit var repository: LoginRepository
-
-    init {
-        App.component.inject(this)
-    }
 
     // LiveData that is fed from the user input and its change is observed for the sake of button enabling.
     private val inputState: MutableLiveData<LoginFormState> by lazy { MutableLiveData<LoginFormState>() }
@@ -58,10 +53,9 @@ class LoginViewModel : ViewModel() {
     /**
      *
      */
-    fun login(username: String, password: String) = scope.launch(Dispatchers.IO) {
-
+    fun login(username: String, password: String)  = scope.launch(Dispatchers.IO) {
         // TODO: Launched in a separate asynchronous job via Rx
-        // With Rx convert postValue to setValue
+        //  With Rx convert postValue to setValue
         val result = repository.login(username, password)
         when (result) {
             is Result.Success ->

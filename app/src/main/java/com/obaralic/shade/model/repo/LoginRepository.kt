@@ -16,31 +16,27 @@
 package com.obaralic.shade.model.repo
 
 import androidx.annotation.WorkerThread
-import com.obaralic.shade.model.source.StorageDataSource
 import com.obaralic.shade.model.Result
 import com.obaralic.shade.model.data.User
+import com.obaralic.shade.model.source.StorageDataSource
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Class that requests authentication and user information
  * from the remote data source and maintains an in-memory
  * cache of login status and user credentials information.
  */
-class LoginRepository @Inject constructor()  {
-
-    @Inject
-    lateinit var localSource: StorageDataSource
+@Singleton
+class LoginRepository @Inject constructor(var localSource: StorageDataSource) {
 
     // --- START: Convert into cacheDataSource ---
-
     /** In-memory cache of the User object. */
     var user: User? = null
         private set
 
     val isLoggedIn: Boolean
         get() = user != null
-
-
     // --- END ---
 
     init {
