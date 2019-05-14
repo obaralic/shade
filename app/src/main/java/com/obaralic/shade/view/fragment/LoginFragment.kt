@@ -21,7 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -33,12 +32,12 @@ import com.obaralic.shade.util.extension.toastLong
 import com.obaralic.shade.viewmodel.login.LoginFormState
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import com.obaralic.shade.viewmodel.login.ResultViewModel
-import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoginFragment : Fragment() {
+class LoginFragment : DaggerFragment() {
 
     @Inject
     internal lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -56,7 +55,6 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidSupportInjection.inject(this)
         Timber.d("LoginFragment: onCreate")
         viewmodel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
     }

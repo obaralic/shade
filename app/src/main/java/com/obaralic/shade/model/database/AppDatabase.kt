@@ -15,16 +15,14 @@
 
 package com.obaralic.shade.model.database
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 @Database(entities = [UserEntity::class], version = 1, exportSchema = false)
@@ -32,12 +30,16 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun userDao(): UserDao
 
+    internal fun addCallback(callback: Callback) {
+        if (mCallbacks == null) {
+            mCallbacks = ArrayList()
+        }
+        mCallbacks!!.add(callback)
+    }
+
     companion object {
 
         const val NAME = "shade_database"
-
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
 
         private val parentJob = Job()
 
@@ -46,27 +48,14 @@ abstract class AppDatabase : RoomDatabase() {
 
         private val ioScope = CoroutineScope(coroutineContext)
 
-        /**
-         * Returns an instance of the Database.
-         */
-        fun getInstance(application: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: buildDatabase(application)
-            }
-
-        @Deprecated("Use @Inject")
-        private fun buildDatabase(application: Context) =
-            Room.databaseBuilder(application.applicationContext, AppDatabase::class.java,  NAME)
-                .addCallback(seedDatabaseCallback(application))
-                .build()
-
-        internal fun seedDatabaseCallback(application: Context): Callback {
+        internal fun seedDatabaseCallback(database: AppDatabase): Callback {
             return object : Callback() {
 
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
+
                     ioScope.launch {
-                        val dao = getInstance(application).userDao()
+                        val dao = database.userDao()
                         dao.insert(UserEntity(0, "debug0@test.com", "Debug0", "debug0"))
                         dao.insert(UserEntity(0, "debug1@test.com", "Debug1", "debug1"))
                         dao.insert(UserEntity(0, "debug2@test.com", "Debug2", "debug2"))

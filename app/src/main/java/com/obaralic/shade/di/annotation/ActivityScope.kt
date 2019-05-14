@@ -13,21 +13,11 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.di.module
+package com.obaralic.shade.di.annotation
 
-import com.obaralic.shade.di.annotation.FragmentScope
-import com.obaralic.shade.view.fragment.LoginFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import javax.inject.Scope
 
-@Module
-abstract class FragmentModule {
-
-    /**
-     * Define the name of the Fragment that is going to
-     * inject the ViewModelFactory into. i.e. in our case.
-     */
-    @FragmentScope
-    @ContributesAndroidInjector
-    abstract fun contributeLoginFragment(): LoginFragment
-}
+@Scope
+@MustBeDocumented
+@Retention
+annotation class ActivityScope

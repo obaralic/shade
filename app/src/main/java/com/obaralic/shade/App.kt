@@ -15,8 +15,6 @@
 
 package com.obaralic.shade
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.location.LocationManager
 import com.obaralic.shade.di.component.DaggerAppComponent
@@ -24,14 +22,14 @@ import com.obaralic.shade.model.database.AppDatabase
 import com.obaralic.shade.model.database.UserDao
 import com.obaralic.shade.util.ioThread
 import com.obaralic.shade.util.log.CrashReportingTree
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 import javax.inject.Inject
 
 
-class App : Application(), HasActivityInjector {
+class App : DaggerApplication() {
 
     @Inject
     lateinit var context: Context
@@ -42,28 +40,14 @@ class App : Application(), HasActivityInjector {
     @Inject
     lateinit var userDao: UserDao
 
-    @Inject
-    lateinit var manager: LocationManager
-
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
-
-    override fun activityInjector(): DispatchingAndroidInjector<Activity>? {
-        return dispatchingAndroidInjector
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerAppComponent.factory().create(this)
     }
 
     override fun onCreate() {
         super.onCreate()
-        initDagger()
         initTimber()
         initDatabase()
-    }
-
-    private fun initDagger() {
-        DaggerAppComponent.builder()
-            .application(this)
-            .build()
-            .inject(this)
     }
 
     private fun initDatabase() {

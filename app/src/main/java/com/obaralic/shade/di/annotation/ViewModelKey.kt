@@ -13,7 +13,7 @@
  *  limitations under the License.
  */
 
-package com.obaralic.shade.di
+package com.obaralic.shade.di.annotation
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

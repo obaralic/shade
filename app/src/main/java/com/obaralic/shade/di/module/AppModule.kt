@@ -15,15 +15,16 @@
 
 package com.obaralic.shade.di.module
 
-import android.app.Application
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.location.LocationManager
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.obaralic.shade.App
 import com.obaralic.shade.model.database.AppDatabase
 import com.obaralic.shade.model.database.UserDao
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -35,26 +36,17 @@ import javax.inject.Singleton
  * database, repo, apis, web etc.
  */
 
-@Module
+@Module(includes = [AppModule.BindsModule::class])
 class AppModule {
 
-    /**
-     * Allow the application context to be injected but require that it be annotated with
-     * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
-     */
-
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context = application
-
-    @Provides
-    @Singleton
-    fun provideLocationManager(application: Application): LocationManager =
+    fun provideLocationManager(application: App): LocationManager =
         application.getSystemService(LOCATION_SERVICE) as LocationManager
 
-    /*
+    /**
      * The method returns the Gson object
-     * */
+     */
     @Provides
     @Singleton
     internal fun provideGson(): Gson {
@@ -78,11 +70,29 @@ class AppModule {
      */
     @Provides
     @Singleton
-    fun provideDatabase(application: Application): AppDatabase {
-        return Room.databaseBuilder(
-            application.applicationContext, AppDatabase::class.java,  AppDatabase.NAME)
-            .addCallback(AppDatabase.seedDatabaseCallback(application))
+    fun provideDatabase(application: App): AppDatabase {
+        val database = Room
+            .databaseBuilder(
+                application.applicationContext,
+                AppDatabase::class.java,
+                AppDatabase.NAME
+            )
+//            .addCallback(AppDatabase.seedDatabaseCallback())
             .build()
+
+        database.addCallback(AppDatabase.seedDatabaseCallback(database))
+        return database
     }
 
+    @Module
+    interface BindsModule {
+
+        /**
+         * Allow the application context to be injected but require that it be annotated with
+         * {@link ForApplication @Annotation} to explicitly differentiate it from an activity context.
+         */
+        @Binds
+        @Singleton
+        fun bindContext(app: App): Context
+    }
 }

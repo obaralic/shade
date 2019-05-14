@@ -31,12 +31,8 @@ import javax.inject.Inject
  */
 class StorageDataSource @Inject constructor(var context: Context) {
 
-    private val userSource: UserDao
-
-    init {
-        val database = AppDatabase.getInstance(context)
-        userSource = database.userDao()
-    }
+    @Inject
+    lateinit var userSource: UserDao
 
     fun login(username: String, password: String): Result<User> {
         Timber.d("Login[$username, $password]")

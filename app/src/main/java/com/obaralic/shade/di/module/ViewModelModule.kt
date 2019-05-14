@@ -18,7 +18,7 @@ package com.obaralic.shade.di.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.obaralic.shade.viewmodel.factory.ViewModelFactory
-import com.obaralic.shade.di.ViewModelKey
+import com.obaralic.shade.di.annotation.ViewModelKey
 import com.obaralic.shade.viewmodel.login.LoginViewModel
 import dagger.Binds
 import dagger.Module

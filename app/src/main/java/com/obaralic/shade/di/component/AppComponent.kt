@@ -17,13 +17,11 @@ package com.obaralic.shade.di.component
 
 import android.app.Application
 import com.obaralic.shade.App
-import com.obaralic.shade.di.module.ActivityModule
-import com.obaralic.shade.di.module.AppModule
-import com.obaralic.shade.di.module.FragmentModule
-import com.obaralic.shade.di.module.ViewModelModule
+import com.obaralic.shade.di.module.*
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
+import dagger.android.DaggerApplication
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -91,7 +89,6 @@ import javax.inject.Singleton
  * @see <a href="https://medium.com/@iammert/new-android-injector-with-dagger-2-part-2-4af05fd783d0">Dagger2 - Part 2</a>
  */
 
-
 @Component(
     modules = [
         AppModule::class,
@@ -102,24 +99,8 @@ import javax.inject.Singleton
     ]
 )
 @Singleton
-interface AppComponent {
+interface AppComponent : AndroidInjector<App> {
 
-    /**
-     * This builder interface is called from the Application class.
-     * It set application object to the AppComponent so that the
-     * application instance is available within it and its
-     * can be accessed by other modules.
-     */
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: Application): Builder
-
-        fun build(): AppComponent
-    }
-
-    /*
-     * This is our custom Application class
-     * */
-    fun inject(app: App)
+    @Component.Factory
+    abstract class Factory : AndroidInjector.Factory<App>
 }
